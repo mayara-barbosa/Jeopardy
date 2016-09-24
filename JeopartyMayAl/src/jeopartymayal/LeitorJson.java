@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package jeopartymayal;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,9 +21,9 @@ public class LeitorJson {
     
  // LINK http://www.devmedia.com.br/leitura-e-escrita-de-arquivos-json-em-java/27663
 
-public class JSONRead {
+//public class JSONRead {
 
-	//public static void main(String[] args) {
+	public static void main(String[] args) {
 		JSONObject jsonObject;
 		//Cria o parse de tratamento
 		JSONParser parser = new JSONParser();
@@ -59,7 +60,7 @@ public class JSONRead {
 	}
 
 }
-    
+      
     
     
 //}
