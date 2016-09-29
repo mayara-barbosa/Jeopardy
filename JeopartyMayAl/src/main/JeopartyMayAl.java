@@ -37,27 +37,28 @@ public class JeopartyMayAl {
         List<Pergunta> perguntas = new ArrayList<Pergunta>();
         
         
-        
-        
         //Threads ------------------------------------------
         
         //Single Thread
         
-        Thread th = new Thread();
+        //Thread th = new Thread();
         
         
-        
-        //MultiThread
+       //MultiThread
                 
        
-        IDaoManager manager1 = new JdbcDaoManager();
-        IDaoManager manager2 = new JdbcDaoManager();
-        IDaoManager manager3 = new JdbcDaoManager();
-        IDaoManager manager4 = new JdbcDaoManager();
+        IDaoManager conexao1 = new JdbcDaoManager();
+        IDaoManager conexao2 = new JdbcDaoManager();
+        IDaoManager conexao3 = new JdbcDaoManager();
+        IDaoManager conexao4 = new JdbcDaoManager();
         
         try{
+            
+            // Array Json para pegar arquivo
             JSONArray array = (JSONArray) parser.parse(new FileReader("src/JSON/dados.json"));
 
+            
+            //
             for (Object object : array)
             {
                 Pergunta pg = new Pergunta();                
@@ -81,15 +82,18 @@ public class JeopartyMayAl {
         System.out.println(perguntas.size() + " registros lidos");        
         
         long tInicial,tFinal;
+        
         try{
-            manager1.iniciar();
-            manager2.iniciar();
-            manager3.iniciar();
-            manager4.iniciar();
-            PerguntaDao dao1 = manager1.getPerguntaDAO();
-            PerguntaDao dao2 = manager2.getPerguntaDAO();
-            PerguntaDao dao3 = manager3.getPerguntaDAO();
-            PerguntaDao dao4 = manager4.getPerguntaDAO();
+            
+            conexao1.iniciar();
+            conexao2.iniciar();
+            conexao3.iniciar();
+            conexao4.iniciar();
+            
+            PerguntaDao dao1 = conexao1.getPerguntaDAO();
+            PerguntaDao dao2 = conexao2.getPerguntaDAO();
+            PerguntaDao dao3 = conexao3.getPerguntaDAO();
+            PerguntaDao dao4 = conexao4.getPerguntaDAO();
             
             InsertRunnable rn1 = new InsertRunnable(dao1, perguntas, 0, (perguntas.size()/4));
             InsertRunnable rn2 = new InsertRunnable(dao2, perguntas, (perguntas.size()/4), 2*(perguntas.size()/4));
@@ -107,26 +111,31 @@ public class JeopartyMayAl {
             th2.start();
             th3.start();
             th4.start();
+            
             th1.join();
             th2.join();
             th3.join();
             th4.join();
             
             tFinal = System.currentTimeMillis();
+            
             System.out.println((rn1.getCont()+rn2.getCont()+rn3.getCont()+rn4.getCont())+" registros inseridos");
             System.out.println("Tempo para inserir: "+((tFinal-tInicial)/1000)+" segundos");
-            manager1.confirmarTransacao();
-            manager2.confirmarTransacao();
-            manager3.confirmarTransacao();
-            manager4.confirmarTransacao();
-            manager1.encerrar();
-            manager2.encerrar();
-            manager3.encerrar();
-            manager4.encerrar();
+            
+            conexao1.confirmarTransacao();
+            conexao2.confirmarTransacao();
+            conexao3.confirmarTransacao();
+            conexao4.confirmarTransacao();
+            
+            conexao1.encerrar();
+            conexao2.encerrar();
+            conexao3.encerrar();
+            conexao4.encerrar();
+            
         }catch(Exception e){
             System.out.println(e.getMessage());
-            manager1.encerrar();
-            manager2.encerrar();
+            conexao1.encerrar();
+            conexao2.encerrar();
         } 
     }
 }

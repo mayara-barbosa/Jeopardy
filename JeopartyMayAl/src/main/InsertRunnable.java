@@ -14,6 +14,7 @@ import java.util.List;
  * @author Usuario
  */
 public class InsertRunnable implements Runnable{
+    
     private PerguntaDao dao;
     List<Pergunta> perguntas;
     private int inicio, fim, cont;

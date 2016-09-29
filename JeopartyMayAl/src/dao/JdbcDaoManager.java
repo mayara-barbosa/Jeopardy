@@ -44,18 +44,6 @@ public class JdbcDaoManager implements IDaoManager{
     }
 
     @Override
-    public void encerrar() {
-        try{
-            if(!conexao.isClosed()){
-                conexao.isClosed();
-            }
-        } catch (SQLException ex) {
-            throw new DaoException("Ocorreu um erro ao encerrar a conexão: " 
-			+ ex.getMessage());
-        }
-    }
-
-    @Override
     public void confirmarTransacao() {
         try{
             conexao.commit();
@@ -80,7 +68,17 @@ public class JdbcDaoManager implements IDaoManager{
         return perguntaDao;
     }
 
-    
+     @Override
+    public void encerrar() {
+        try{
+            if(!conexao.isClosed()){
+                conexao.isClosed();
+            }
+        } catch (SQLException ex) {
+            throw new DaoException("Ocorreu um erro ao encerrar a conexão: " 
+			+ ex.getMessage());
+        }
+    }
     
 }
 
