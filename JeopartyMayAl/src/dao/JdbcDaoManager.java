@@ -28,8 +28,10 @@ public class JdbcDaoManager implements IDaoManager{
         try{
             Class.forName("com.mysql.jdbc.Driver");
             String url;
-            url = "jdbc:mysql://10.96.26.107:3306/jeopardy";
-            conexao = DriverManager.getConnection(url, "root", "root");
+            String user = "root";
+            String passwd = "root";
+            url = "jdbc:mysql://localhost:3306/jeopardy";
+            conexao = DriverManager.getConnection(url, user, passwd);
             conexao.setAutoCommit(false);
             perguntaDao = new JdbcPerguntaDao(conexao);
             
