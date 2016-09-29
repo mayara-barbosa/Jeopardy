@@ -26,84 +26,64 @@ import org.json.simple.parser.JSONParser;
  */
 public class JeopartyMayAl {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
-        
-        // Leitor JSON
+        long tInicial,tFinal;   
         JSONParser parser = new JSONParser();
         List<Pergunta> perguntas = new ArrayList<Pergunta>();
+                        
+       //conexâo com bd para multi thread
+        IDaoManager con1 = new JdbcDaoManager();
+        IDaoManager con2 = new JdbcDaoManager();
+        IDaoManager con3 = new JdbcDaoManager();
+        IDaoManager con4 = new JdbcDaoManager();
         
-        
-        //Threads ------------------------------------------
-        
-        //Single Thread
-        
-        //Thread th = new Thread();
-        
-        
-       //MultiThread
-                
-       
-        IDaoManager conexao1 = new JdbcDaoManager();
-        IDaoManager conexao2 = new JdbcDaoManager();
-        IDaoManager conexao3 = new JdbcDaoManager();
-        IDaoManager conexao4 = new JdbcDaoManager();
-        
-        try{
-            
+        try{            
             // Array Json para pegar arquivo
-            JSONArray array = (JSONArray) parser.parse(new FileReader("src/JSON/dados.json"));
-
-            
-            //
+            JSONArray array = (JSONArray) parser.parse(new FileReader("src/json/dados.json"));
+           
+            //popula array
             for (Object object : array)
             {
-                Pergunta pg = new Pergunta();                
+                Pergunta perg = new Pergunta();                
                 JSONObject pergunta = (JSONObject) object;
-                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");                
+                DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");                
                 
-                pg.setCategory((String) pergunta.get("category"));                 
-                pg.setAir_date((Date)formatter.parse((String) pergunta.get("air_date")));                
-                pg.setQuestion((String) pergunta.get("question"));                
-                pg.setValue((String) pergunta.get("value"));                
-                pg.setAnswer((String) pergunta.get("answer"));                
-                pg.setRound((String) pergunta.get("round"));             
-                pg.setShow_number( Integer.parseInt((String) pergunta.get("show_number")));
-                perguntas.add(pg);
-            }
-                
+                perg.setCategory((String) pergunta.get("category"));                 
+                perg.setAir_date((Date)formater.parse((String) pergunta.get("air_date")));                
+                perg.setQuestion((String) pergunta.get("question"));                
+                perg.setValue((String) pergunta.get("value"));                
+                perg.setAnswer((String) pergunta.get("answer"));                
+                perg.setRound((String) pergunta.get("round"));             
+                perg.setShow_number( Integer.parseInt((String) pergunta.get("show_number")));
+                perguntas.add(perg);
+            }               
 
         }catch(Exception e){
             e.printStackTrace();
         }
-        System.out.println(perguntas.size() + " registros lidos");        
+        System.out.println(perguntas.size() + " registros");        
         
-        long tInicial,tFinal;
         
         try{
+            con1.iniciar();
+            con2.iniciar();
+            con3.iniciar();
+            con4.iniciar();
             
-            conexao1.iniciar();
-            conexao2.iniciar();
-            conexao3.iniciar();
-            conexao4.iniciar();
+            PerguntaDao dao1 = con1.getPerguntaDAO();
+            PerguntaDao dao2 = con2.getPerguntaDAO();
+            PerguntaDao dao3 = con3.getPerguntaDAO();
+            PerguntaDao dao4 = con4.getPerguntaDAO();
             
-            PerguntaDao dao1 = conexao1.getPerguntaDAO();
-            PerguntaDao dao2 = conexao2.getPerguntaDAO();
-            PerguntaDao dao3 = conexao3.getPerguntaDAO();
-            PerguntaDao dao4 = conexao4.getPerguntaDAO();
+            JeopardyRunnable jrn1 = new JeopardyRunnable(dao1, perguntas, 0, (perguntas.size()/4));
+            JeopardyRunnable jrn2 = new JeopardyRunnable(dao2, perguntas, (perguntas.size()/4), 2*(perguntas.size()/4));
+            JeopardyRunnable jrn3 = new JeopardyRunnable(dao3, perguntas, 2*(perguntas.size()/4), 3*(perguntas.size()/4));
+            JeopardyRunnable jrn4 = new JeopardyRunnable(dao4, perguntas, 3*(perguntas.size()/4), perguntas.size());
             
-            InsertRunnable rn1 = new InsertRunnable(dao1, perguntas, 0, (perguntas.size()/4));
-            InsertRunnable rn2 = new InsertRunnable(dao2, perguntas, (perguntas.size()/4), 2*(perguntas.size()/4));
-            InsertRunnable rn3 = new InsertRunnable(dao3, perguntas, 2*(perguntas.size()/4), 3*(perguntas.size()/4));
-            InsertRunnable rn4 = new InsertRunnable(dao4, perguntas, 3*(perguntas.size()/4), perguntas.size());
-            
-            Thread th1 = new Thread(rn1);
-            Thread th2 = new Thread(rn2);
-            Thread th3 = new Thread(rn3);
-            Thread th4 = new Thread(rn4);
+            Thread th1 = new Thread(jrn1);
+            Thread th2 = new Thread(jrn2);
+            Thread th3 = new Thread(jrn3);
+            Thread th4 = new Thread(jrn4);
             
             tInicial = System.currentTimeMillis();
             
@@ -119,23 +99,25 @@ public class JeopartyMayAl {
             
             tFinal = System.currentTimeMillis();
             
-            System.out.println((rn1.getCont()+rn2.getCont()+rn3.getCont()+rn4.getCont())+" registros inseridos");
+            System.out.println((jrn1.getCont()+jrn2.getCont()+jrn3.getCont()+jrn4.getCont())+" registros inseridos");
             System.out.println("Tempo para inserir: "+((tFinal-tInicial)/1000)+" segundos");
             
-            conexao1.confirmarTransacao();
-            conexao2.confirmarTransacao();
-            conexao3.confirmarTransacao();
-            conexao4.confirmarTransacao();
+            con1.confirmarTransacao();
+            con2.confirmarTransacao();
+            con3.confirmarTransacao();
+            con4.confirmarTransacao();
             
-            conexao1.encerrar();
-            conexao2.encerrar();
-            conexao3.encerrar();
-            conexao4.encerrar();
+            con1.encerrar();
+            con2.encerrar();
+            con3.encerrar();
+            con4.encerrar();
             
         }catch(Exception e){
             System.out.println(e.getMessage());
-            conexao1.encerrar();
-            conexao2.encerrar();
+            con1.encerrar();
+            con2.encerrar();
+            con3.encerrar();
+            con4.encerrar();
         } 
     }
 }

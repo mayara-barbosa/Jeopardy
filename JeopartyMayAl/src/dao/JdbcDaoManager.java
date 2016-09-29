@@ -28,14 +28,14 @@ public class JdbcDaoManager implements IDaoManager{
         try{
             Class.forName("com.mysql.jdbc.Driver");
             String url;
-            url = "jdbc:mysql://10.96.26.98:3306/jeopardy";
+            url = "jdbc:mysql://10.96.26.107:3306/jeopardy";
             conexao = DriverManager.getConnection(url, "root", "root");
             conexao.setAutoCommit(false);
             perguntaDao = new JdbcPerguntaDao(conexao);
             
         }catch(SQLException ex){
             System.out.println(ex.getMessage());
-            throw new DaoException("Ocorreu um erro ao conectar ao banco de dados"+
+            throw new DaoException("Ocorreu um erro ao tentar conectar com o banco de dados"+
                 ex.getMessage());
             
         } catch (ClassNotFoundException ex) {

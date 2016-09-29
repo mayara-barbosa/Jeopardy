@@ -23,7 +23,7 @@ public class JdbcPerguntaDao implements PerguntaDao{
     
     @Override
     public void inserir(Pergunta pergunta) {
-        String sql = "INSERT INTO Perguntas ("
+        String sql = "INSERT INTO perguntas ("
                 + "category, "
                 + "air_date, "
                 + "question, "

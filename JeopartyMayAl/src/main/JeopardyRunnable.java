@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package main;
 
 import dao.PerguntaDao;
@@ -11,15 +6,15 @@ import java.util.List;
 
 /**
  *
- * @author Usuario
+ * @author mayara-barbosa
  */
-public class InsertRunnable implements Runnable{
+public class JeopardyRunnable implements Runnable{
     
     private PerguntaDao dao;
     List<Pergunta> perguntas;
     private int inicio, fim, cont;
 
-    public InsertRunnable(PerguntaDao dao, List<Pergunta> perguntas, int inicio, int fim) {
+    public JeopardyRunnable(PerguntaDao dao, List<Pergunta> perguntas, int inicio, int fim) {
         this.dao = dao;
         this.perguntas = perguntas;
         this.inicio = inicio;
