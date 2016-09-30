@@ -1,5 +1,3 @@
-
- 
 package dao;
 
 import java.sql.Connection;
@@ -47,8 +45,7 @@ public class JdbcDaoManager implements IDaoManager{
         try{
             conexao.commit();
         }catch(SQLException ex){
-            throw new DaoException("Ocorreu um erro ao confirmar a transação" 
-			+ ex.getMessage());
+            throw new DaoException("Ocorreu um erro ao confirmar a transação" + ex.getMessage());
         }
     }
 
@@ -57,8 +54,7 @@ public class JdbcDaoManager implements IDaoManager{
         try {
             conexao.rollback();
         } catch (SQLException ex){
-            throw new DaoException("Ocorreu um erro ao abortar a transação" +
-			ex.getMessage());
+            throw new DaoException("Ocorreu um erro ao abortar a transação" + 	ex.getMessage());
         }
     }
 
@@ -74,8 +70,7 @@ public class JdbcDaoManager implements IDaoManager{
                 conexao.isClosed();
             }
         } catch (SQLException ex) {
-            throw new DaoException("Ocorreu um erro ao encerrar a conexão: " 
-			+ ex.getMessage());
+            throw new DaoException("Ocorreu um erro ao encerrar a conexão: " + ex.getMessage());
         }
     }
     

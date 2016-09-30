@@ -66,7 +66,7 @@ public class JeopartyMayAl {
         
         
         try{
-            //SINGLE THREAD
+           ///SINGLE THREAD
             con5.iniciar();
             PerguntaDao dao5 = con5.getPerguntaDAO();
             JeopardyRunnable jrun = new JeopardyRunnable(dao5, perguntas, 0, perguntas.size());
@@ -80,7 +80,7 @@ public class JeopartyMayAl {
             con5.confirmarTransacao();            
             con5.encerrar();
              
-           
+           //MULTI THREAD
             con1.iniciar();
             con2.iniciar();
             con3.iniciar();
@@ -127,7 +127,7 @@ public class JeopartyMayAl {
             con2.encerrar();
             con3.encerrar();
             con4.encerrar();
-            
+           
            
            
             
